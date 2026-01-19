@@ -1,0 +1,5 @@
+model,dataset,r2_eval,r2_test,n_trees
+random_boosting (proposal),california_housing,0.827939,0.824273,332
+random_boosting (proposal),bike_sharing,0.931603,0.922102,886
+random_boosting (proposal),medical_charges,0.975107,0.980462,128
+random_boosting (proposal),king_county_house_prices,0.894820,0.892369,87
