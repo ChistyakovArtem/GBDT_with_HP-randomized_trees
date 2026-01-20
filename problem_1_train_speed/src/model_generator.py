@@ -40,14 +40,12 @@ class OptunaModelGenerator(BaseModelGenerator):
             "loss_function": "RMSE",
             "grow_policy": grow_policy,
 
-            # Splits
             "border_count": trial.suggest_int("border_count", 32, 255),
             "feature_border_type": trial.suggest_categorical(
                 "feature_border_type",
                 ["GreedyLogSum", "Median", "Uniform"]
             ),
 
-            # Regularization
             "l2_leaf_reg": trial.suggest_float(
                 "l2_leaf_reg", 1e-6, 100.0, log=True
             ),
@@ -55,13 +53,11 @@ class OptunaModelGenerator(BaseModelGenerator):
                 "min_data_in_leaf", 1, 64
             ),
 
-            # Stochasticity
             "random_strength": trial.suggest_float(
                 "random_strength", 1e-3, 10.0, log=True
             ),
             "rsm": trial.suggest_float("rsm", 0.3, 1.0),
 
-            # Score noise
             "score_function": trial.suggest_categorical(
                 "score_function", ["Cosine", "L2"]
             ),
@@ -69,13 +65,11 @@ class OptunaModelGenerator(BaseModelGenerator):
             "verbose": False,
         }
 
-        # Depth vs leaves
         if grow_policy in ["SymmetricTree", "Depthwise"]:
             params["depth"] = trial.suggest_int("depth", 2, 12)
         else:
             params["max_leaves"] = trial.suggest_int("max_leaves", 8, 64)
 
-        # Bootstrap
         bootstrap_type = trial.suggest_categorical(
             "bootstrap_type", ["Bayesian", "Bernoulli", "No"]
         )
