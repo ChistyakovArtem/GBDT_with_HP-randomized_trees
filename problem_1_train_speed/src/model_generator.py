@@ -8,19 +8,17 @@ class BaseModelGenerator:
 
 
 class CopyModelGenerator(BaseModelGenerator):
-    
     def __init__(self, base_model):
         self.base_model = base_model
 
     def generate(self, iteration):
         return copy.deepcopy(self.base_model)
-    
+
     def update_on_iteration_end(self, iteration, metric_val, patience):
         pass
 
 
 class OptunaModelGenerator(BaseModelGenerator):
-
     def __init__(self, base_model, study):
         self.base_model = base_model
         self.study = study
@@ -39,29 +37,19 @@ class OptunaModelGenerator(BaseModelGenerator):
             "learning_rate": 1.0,
             "loss_function": "RMSE",
             "grow_policy": grow_policy,
-
             "border_count": trial.suggest_int("border_count", 32, 255),
             "feature_border_type": trial.suggest_categorical(
-                "feature_border_type",
-                ["GreedyLogSum", "Median", "Uniform"]
+                "feature_border_type", ["GreedyLogSum", "Median", "Uniform"]
             ),
-
-            "l2_leaf_reg": trial.suggest_float(
-                "l2_leaf_reg", 1e-6, 100.0, log=True
-            ),
-            "min_data_in_leaf": trial.suggest_int(
-                "min_data_in_leaf", 1, 64
-            ),
-
+            "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1e-6, 100.0, log=True),
+            "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 64),
             "random_strength": trial.suggest_float(
                 "random_strength", 1e-3, 10.0, log=True
             ),
             "rsm": trial.suggest_float("rsm", 0.3, 1.0),
-
             "score_function": trial.suggest_categorical(
                 "score_function", ["Cosine", "L2"]
             ),
-
             "verbose": False,
         }
 

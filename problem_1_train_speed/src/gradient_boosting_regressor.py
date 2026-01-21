@@ -13,7 +13,7 @@ class MyCatBoost:
         n_estimators=100,
         learning_rate=0.1,
         random_state=42,
-        verbose=0
+        verbose=0,
     ):
         self.model_generator = model_generator
         self.n_estimators = n_estimators
@@ -53,13 +53,11 @@ class MyCatBoost:
                 best_iter = it
                 patience = 0
             else:
-                self.models.pop()
+                self.models.pop() # TODO: remove and rerun for authenticity (like a real catboost)
                 patience += 1
 
             self.model_generator.update_on_iteration_end(
-                iteration=it,
-                metric_val=rmse_val,
-                patience=patience
+                iteration=it, metric_val=rmse_val, patience=patience
             )
 
             if self.verbose and it % self.verbose == 0:

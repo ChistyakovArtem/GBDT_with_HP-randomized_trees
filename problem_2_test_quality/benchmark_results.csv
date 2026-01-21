@@ -1,0 +1,13 @@
+model,dataset,r2_test,n_trees
+treewise HPO (proposal),california_housing,0.835556,67
+catboost (HPO),california_housing,0.853121,1151
+catboost (default HP),california_housing,0.847795,770
+treewise HPO (proposal),bike_sharing,0.928547,78
+catboost (HPO),bike_sharing,0.935052,943
+catboost (default HP),bike_sharing,0.926438,984
+treewise HPO (proposal),medical_charges,0.980997,88
+catboost (HPO),medical_charges,0.980542,174
+catboost (default HP),medical_charges,0.975532,322
+treewise HPO (proposal),king_county_house_prices,0.896836,61
+catboost (HPO),king_county_house_prices,0.868690,244
+catboost (default HP),king_county_house_prices,0.863996,125
