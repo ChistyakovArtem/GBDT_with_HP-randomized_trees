@@ -115,6 +115,7 @@ class MyCatBoost:
         random_strength: float = 1.0,          # multiplier for split-score noise
         random_seed: int = 42,
         verbose: int = 0,
+        fix_borders: bool = True
     ):
         self.base_model_fn = base_model_fn
         self.n_estimators = n_estimators
@@ -132,6 +133,7 @@ class MyCatBoost:
             self.bootstrap = NoBootstrap()
 
         self.rng = np.random.default_rng(random_seed)
+        self.fix_borders = fix_borders
 
         # State set during fit
         self.models = []
@@ -184,7 +186,7 @@ class MyCatBoost:
     # ------------------------------------------------------------------
 
     def _fit_plain(self, X, y, pred_val, X_val, y_val,
-                   early_stopping_rounds, best_score, best_iter, patience, fix_borders=True):
+                   early_stopping_rounds, best_score, best_iter, patience):
         n = len(y)
         pred = np.full(n, self.init_value)
         train_pool = Pool(X, y)
@@ -194,7 +196,7 @@ class MyCatBoost:
         print(self.borders_file)
         
         # Create initial pool and extract borders
-        if fix_borders:
+        if self.fix_borders:
             train_pool_initial = Pool(X, y)
             train_pool_initial.quantize()
             train_pool_initial.save_quantization_borders(self.borders_file)
@@ -204,7 +206,7 @@ class MyCatBoost:
             residual = y - pred
             weights = self.bootstrap.sample_weights(n, self.rng)
             train_pool = Pool(X, residual, weight=weights)
-            if fix_borders:
+            if self.fix_borders:
                 train_pool.quantize(input_borders=self.borders_file)
 
             model = self.base_model_fn(noise_std=self._noise_std(it))

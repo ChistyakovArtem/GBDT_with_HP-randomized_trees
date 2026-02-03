@@ -1,0 +1,43 @@
+model,dataset,r2_val,r2_test,n_trees
+Exp 1:  catboost (default HP),california_housing,0.838956,0.841428,499
+"Exp 2:  catboost-style (self-made, default catboost HP)",california_housing,0.842885,0.845774,805
+"Exp 3:  catboost-style (self-made, random HP)",california_housing,0.838407,0.844234,402
+Exp 1:  catboost (default HP),bike_sharing,0.931031,0.924795,685
+"Exp 2:  catboost-style (self-made, default catboost HP)",bike_sharing,0.932595,0.925218,674
+"Exp 3:  catboost-style (self-made, random HP)",bike_sharing,0.934651,0.928769,386
+Exp 1:  catboost (default HP),medical_charges,0.966785,0.975290,217
+"Exp 2:  catboost-style (self-made, default catboost HP)",medical_charges,0.966385,0.975158,175
+"Exp 3:  catboost-style (self-made, random HP)",medical_charges,0.974762,0.980549,266
+Exp 1:  catboost (default HP),king_county_house_prices,0.890929,0.864047,127
+"Exp 2:  catboost-style (self-made, default catboost HP)",king_county_house_prices,0.911651,0.878123,163
+"Exp 3:  catboost-style (self-made, random HP)",king_county_house_prices,0.896634,0.882259,159
+Exp 1:  catboost (default HP),online_news_popularity,0.302136,0.298230,392
+"Exp 2:  catboost-style (self-made, default catboost HP)",online_news_popularity,0.296393,0.295921,303
+"Exp 3:  catboost-style (self-made, random HP)",online_news_popularity,0.285253,0.282790,215
+Exp 1:  catboost (default HP),year_prediction_msd,0.301649,0.299501,434
+"Exp 2:  catboost-style (self-made, default catboost HP)",year_prediction_msd,0.299749,0.297733,378
+"Exp 3:  catboost-style (self-made, random HP)",year_prediction_msd,0.286095,0.285206,191
+Exp 1:  catboost (default HP),cpu_activity,0.609174,0.600995,997
+"Exp 2:  catboost-style (self-made, default catboost HP)",cpu_activity,0.612317,0.604881,1000
+"Exp 3:  catboost-style (self-made, random HP)",cpu_activity,0.644556,0.634945,1000
+Exp 1:  catboost (default HP),facebook_comment_volume,0.882257,0.856751,205
+"Exp 2:  catboost-style (self-made, default catboost HP)",facebook_comment_volume,0.873137,0.852349,111
+"Exp 3:  catboost-style (self-made, random HP)",facebook_comment_volume,0.932502,0.908897,205
+Exp 1:  catboost (default HP),airline_delay,0.045954,0.050264,154
+"Exp 2:  catboost-style (self-made, default catboost HP)",airline_delay,0.046269,0.050158,136
+"Exp 3:  catboost-style (self-made, random HP)",airline_delay,0.045189,0.050175,91
+Exp 1:  catboost (default HP),superconductivity,0.913677,0.926424,1000
+"Exp 2:  catboost-style (self-made, default catboost HP)",superconductivity,0.915371,0.925702,1000
+"Exp 3:  catboost-style (self-made, random HP)",superconductivity,0.917106,0.928058,571
+Exp 1:  catboost (default HP),diamonds,0.886269,0.884534,112
+"Exp 2:  catboost-style (self-made, default catboost HP)",diamonds,0.886495,0.885186,107
+"Exp 3:  catboost-style (self-made, random HP)",diamonds,0.887721,0.885730,139
+Exp 1:  catboost (default HP),ames_housing_large,0.889428,0.860010,121
+"Exp 2:  catboost-style (self-made, default catboost HP)",ames_housing_large,0.880788,0.864027,87
+"Exp 3:  catboost-style (self-made, random HP)",ames_housing_large,0.899190,0.871761,116
+Exp 1:  catboost (default HP),brazilian_houses,0.245292,0.231016,114
+"Exp 2:  catboost-style (self-made, default catboost HP)",brazilian_houses,0.245387,0.231735,52
+"Exp 3:  catboost-style (self-made, random HP)",brazilian_houses,0.235196,0.228523,39
+Exp 1:  catboost (default HP),metro_traffic_volume,0.216335,0.212367,104
+"Exp 2:  catboost-style (self-made, default catboost HP)",metro_traffic_volume,0.216437,0.215456,97
+"Exp 3:  catboost-style (self-made, random HP)",metro_traffic_volume,0.213719,0.211941,54
