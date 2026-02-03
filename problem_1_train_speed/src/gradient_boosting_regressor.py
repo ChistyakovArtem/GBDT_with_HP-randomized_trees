@@ -53,7 +53,6 @@ class MyCatBoost:
                 best_iter = it
                 patience = 0
             else:
-                self.models.pop() # TODO: remove and rerun for authenticity (like a real catboost)
                 patience += 1
 
             self.model_generator.update_on_iteration_end(

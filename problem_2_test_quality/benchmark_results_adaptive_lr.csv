@@ -1,0 +1,7 @@
+model,dataset,r2_test,n_trees
+treewise HPO (proposal),california_housing,0.837615,105
+catboost (HPO),california_housing,0.851801,504
+catboost (default HP),california_housing,0.847795,770
+treewise HPO (proposal),bike_sharing,0.928694,96
+catboost (HPO),bike_sharing,0.933878,723
+catboost (default HP),bike_sharing,0.926438,984

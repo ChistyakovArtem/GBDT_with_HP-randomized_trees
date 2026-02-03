@@ -8,25 +8,26 @@ class BaseModelGenerator:
 
 
 class CopyModelGenerator(BaseModelGenerator):
-    
     def __init__(self, base_model):
         self.base_model = base_model
 
     def generate(self, iteration):
         return copy.deepcopy(self.base_model)
-    
+
     def update_on_iteration_end(self, iteration, metric_val, patience):
         pass
 
 
 class OptunaModelGenerator(BaseModelGenerator):
-
-    def __init__(self, base_model, study, n_trials_per_iter=5):
+    def __init__(self, base_model, study):
         self.base_model = base_model
         self.study = study
-        self.n_trials_per_iter = n_trials_per_iter
+        self.iteration_to_trial = {}
 
-    def _sample_params(self, trial):
+    def generate(self, iteration):
+        trial = self.study.ask()
+        self.iteration_to_trial[iteration] = trial
+
         grow_policy = trial.suggest_categorical(
             "grow_policy", ["SymmetricTree", "Depthwise", "Lossguide"]
         )
@@ -36,18 +37,12 @@ class OptunaModelGenerator(BaseModelGenerator):
             "learning_rate": 1.0,
             "loss_function": "RMSE",
             "grow_policy": grow_policy,
-
             "border_count": trial.suggest_int("border_count", 32, 255),
             "feature_border_type": trial.suggest_categorical(
-                "feature_border_type",
-                ["GreedyLogSum", "Median", "Uniform"]
+                "feature_border_type", ["GreedyLogSum", "Median", "Uniform"]
             ),
-            "l2_leaf_reg": trial.suggest_float(
-                "l2_leaf_reg", 1e-6, 100.0, log=True
-            ),
-            "min_data_in_leaf": trial.suggest_int(
-                "min_data_in_leaf", 1, 64
-            ),
+            "l2_leaf_reg": trial.suggest_float("l2_leaf_reg", 1e-6, 100.0, log=True),
+            "min_data_in_leaf": trial.suggest_int("min_data_in_leaf", 1, 64),
             "random_strength": trial.suggest_float(
                 "random_strength", 1e-3, 10.0, log=True
             ),
@@ -70,63 +65,17 @@ class OptunaModelGenerator(BaseModelGenerator):
 
         if bootstrap_type == "Bernoulli":
             params["subsample"] = trial.suggest_float("subsample", 0.5, 1.0)
+
         elif bootstrap_type == "Bayesian":
             params["bagging_temperature"] = trial.suggest_float(
                 "bagging_temperature", 0.0, 10.0
             )
 
-        return params
+        model = copy.deepcopy(self.base_model)
+        model.set_params(**params)
 
-    def generate(
-        self,
-        iteration,
-        train_set,
-        hp_set,
-        pred_hp,
-        learning_rate=None,
-    ):
-        X_train, y_train = train_set
-        X_hp, y_hp = hp_set
-
-        best_model = None
-        best_score = np.inf
-        best_lr_glob = None
-        study = copy.deepcopy(self.study)
-
-        for _ in range(self.n_trials_per_iter):
-            trial = study.ask()
-            params = self._sample_params(trial)
-
-            model = copy.deepcopy(self.base_model)
-            model.set_params(**params)
-            model.fit(X_train, y_train)
-
-            if learning_rate is None:
-                best_rmse_hp = np.inf 
-                best_lr = None
-
-                pred = model.predict(X_hp)
-                for lr in np.linspace(-5, 5, 1000):
-                    pred_hp_new = pred_hp + lr * pred
-                    rmse_hp = np.sqrt(np.mean((y_hp - pred_hp_new) ** 2))
-
-                    if rmse_hp < best_rmse_hp:
-                        best_rmse_hp = rmse_hp
-                        best_lr = lr
-            else: 
-                pred = model.predict(X_hp)
-                pred_hp_new = pred_hp + learning_rate * pred
-                best_rmse_hp = np.sqrt(np.mean((y_hp - pred_hp_new) ** 2))
-                best_lr = learning_rate
-
-            study.tell(trial, best_rmse_hp)
-
-            if best_rmse_hp < best_score:
-                best_score = best_rmse_hp
-                best_model = model
-                best_lr_glob = best_lr
-
-        return best_model, best_lr_glob
+        return model
 
     def update_on_iteration_end(self, iteration, metric_val, patience):
-        pass
+        trial = self.iteration_to_trial.pop(iteration)
+        self.study.tell(trial, -patience)

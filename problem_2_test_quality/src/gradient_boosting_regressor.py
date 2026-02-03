@@ -22,6 +22,7 @@ class MyCatBoost:
         self.rng = np.random.default_rng(random_state)
 
         self.models = []
+        self.lrs = []
         self.init_value = 0.0
 
     def fit(self, X, y, hp_set, eval_set, early_stopping_rounds=None):
@@ -40,19 +41,25 @@ class MyCatBoost:
         for it in range(self.n_estimators):
             residual = y - pred
 
-            model = self.model_generator.generate(
+            res = self.model_generator.generate(
                 iteration=it,
                 train_set=(X, residual),
                 hp_set=hp_set,
                 pred_hp=pred_hp,
                 learning_rate=self.learning_rate,
             )
+            if len(res) == 1:
+                model = res
+                lr = self.learning_rate
+            else:
+                model, lr = res
 
             self.models.append(model)
+            self.lrs.append(lr)
 
-            pred += self.learning_rate * model.predict(X)
-            pred_hp += self.learning_rate * model.predict(X_hp)
-            pred_val += self.learning_rate * model.predict(X_val)
+            pred += lr * model.predict(X)
+            pred_hp += lr * model.predict(X_hp)
+            pred_val += lr * model.predict(X_val)
             
             rmse_val = np.sqrt(np.mean((y_val - pred_val) ** 2))
             if rmse_val < best_score:
@@ -78,12 +85,13 @@ class MyCatBoost:
                         f"best RMSE = {best_score:.6f}"
                     )
                 self.models = self.models[: best_iter + 1]
+                self.lrs = self.lrs[: best_iter + 1]
                 break
 
         return self
 
     def predict(self, X):
         pred = np.full(len(X), self.init_value)
-        for model in self.models:
-            pred += self.learning_rate * model.predict(X)
+        for model, lr in zip(self.models, self.lrs):
+            pred += lr * model.predict(X)
         return pred
